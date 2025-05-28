@@ -1,20 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BirdMash — Daily Quiz</title>
-  <link href="style.css" rel="stylesheet">
+  <title>🐦 BirdMash Quiz — 28 May 2025</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f4f9f9;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .difficulty-buttons {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .quiz-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .quiz-card {
+      width: 300px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+    }
+    .quiz-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-  <h1>🐦 BirdMash Quiz — 28 May 2025</h1>
-  <p>Guess the bird species from these scrambled images!</p>
 
-  <div class="quiz-container">
-    <div class="question">
-      <img src="output/2025-05-28/scrambled1.jpg" alt="Bird 1">
-      <input type="text" placeholder="Your guess for Bird 1">
-    </div>
-    <!-- Repeat up to 10 -->
+  <div class="quiz-header">
+    <h1>🐦 BirdMash Quiz — 28 May 2025</h1>
+    <p>Guess the bird species from these scrambled images!</p>
   </div>
+
+  <div class="difficulty-buttons">
+    <button class="btn btn-primary me-2" onclick="showDifficulty('ametaur')">Amateur</button>
+    <button class="btn btn-success me-2" onclick="showDifficulty('birder')">Birder</button>
+    <button class="btn btn-danger" onclick="showDifficulty('Bostik')">Bostik</button>
+  </div>
+
+  <div class="quiz-container" id="quiz"></div>
+
+  <script>
+    const difficulties = {
+      ametaur: '/images/ametaur/',
+      birder: '/images/birder/',
+      Bostik: '/images/Bostik/'
+    };
+
+    function showDifficulty(level) {
+      const container = document.getElementById('quiz');
+      container.innerHTML = '';
+      for (let i = 1; i <= 10; i++) {
+        const card = document.createElement('div');
+        card.className = 'quiz-card';
+        card.innerHTML = `
+          <img src="${difficulties[level]}scrambled${i}.jpg" alt="Bird ${i}">
+          <input type="text" class="form-control mt-2" placeholder="Your guess for Bird ${i}">
+        `;
+        container.appendChild(card);
+      }
+    }
+  </script>
+
 </body>
 </html>
