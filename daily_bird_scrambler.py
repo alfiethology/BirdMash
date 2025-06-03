@@ -78,41 +78,45 @@ def scramble_image(input_path, output_path, num_tiles):
     scrambled_img = Image.fromarray(scrambled_arr)
     scrambled_img.save(output_path)
 
-# Recursively find all images in images/ subfolders
-all_images = []
-for root, dirs, files in os.walk(IMAGES_DIR):
-    for f in files:
-        if f.lower().endswith(('.jpg', '.jpeg', '.png')):
-            all_images.append(os.path.join(root, f))
+def main():
+    # Recursively find all images in images/ subfolders
+    all_images = []
+    for root, dirs, files in os.walk(IMAGES_DIR):
+        for f in files:
+            if f.lower().endswith(('.jpg', '.jpeg', '.png')):
+                all_images.append(os.path.join(root, f))
 
-if len(all_images) < NUM_IMAGES:
-    raise ValueError("Not enough images in images folder and its subfolders!")
+    if len(all_images) < NUM_IMAGES:
+        raise ValueError("Not enough images in images folder and its subfolders!")
 
-selected_images = []
-random.shuffle(all_images)
-idx = 0
-while len(selected_images) < NUM_IMAGES and idx < len(all_images):
-    img_path = all_images[idx]
-    if has_border(img_path):
-        os.remove(img_path)
+    selected_images = []
+    random.shuffle(all_images)
+    idx = 0
+    while len(selected_images) < NUM_IMAGES and idx < len(all_images):
+        img_path = all_images[idx]
+        if has_border(img_path):
+            os.remove(img_path)
+            idx += 1
+            continue
+        selected_images.append(img_path)
         idx += 1
-        continue
-    selected_images.append(img_path)
-    idx += 1
 
-if len(selected_images) < NUM_IMAGES:
-    raise ValueError("Not enough borderless images available!")
+    if len(selected_images) < NUM_IMAGES:
+        raise ValueError("Not enough borderless images available!")
 
-for src_path in selected_images:
-    filename = os.path.basename(src_path)
-    used_path = os.path.join(USED_DIR, filename)
+    for src_path in selected_images:
+        filename = os.path.basename(src_path)
+        used_path = os.path.join(USED_DIR, filename)
 
-    for diff, num_tiles in DIFFICULTY_LEVELS.items():
-        output_dir = os.path.join(BASE_OUTPUT_DIR, diff)
-        output_path = os.path.join(output_dir, filename)
-        scramble_image(src_path, output_path, num_tiles)
+        for diff, num_tiles in DIFFICULTY_LEVELS.items():
+            output_dir = os.path.join(BASE_OUTPUT_DIR, diff)
+            output_path = os.path.join(output_dir, filename)
+            scramble_image(src_path, output_path, num_tiles)
 
-    # Move original to used_images (flattened)
-    shutil.move(src_path, used_path)
+        # Move original to used_images (flattened)
+        shutil.move(src_path, used_path)
 
-print(f"Processed {NUM_IMAGES} images. Scrambled versions saved in {BASE_OUTPUT_DIR}.")
+    print(f"Processed {NUM_IMAGES} images. Scrambled versions saved in {BASE_OUTPUT_DIR}.")
+
+if __name__ == "__main__":
+    main()
